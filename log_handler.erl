@@ -11,7 +11,7 @@
 -export([init/1, terminate/1, handle_event/2]).
 
 init(File) ->
-  {ok, Fd} = file:open(File, append),
+  {ok, Fd} = file:open(File, [append]),
   Fd.
 
 terminate(Fd) -> file:close(Fd).

@@ -32,8 +32,8 @@ incoming(Number)       -> phone_fsm ! {incoming, Number}, ok.
 outgoing(Number)       -> phone_fsm ! {outgoing, Number}, ok.
 off_hook()             -> phone_fsm ! off_hook, ok.
 on_hook()              -> phone_fsm ! on_hook, ok.
+other_off_hook(Number) -> phone_fsm ! {other_off_hook, Number}, ok.
 other_on_hook(Number)  -> phone_fsm ! {other_on_hook, Number}, ok.
-other_off_hook(Number) -> phone_fsm ! {other_on_hook, Number}, ok.
 
 idle() ->
   receive
