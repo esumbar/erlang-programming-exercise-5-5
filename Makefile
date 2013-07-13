@@ -1,4 +1,5 @@
-# From "Programming Erlang" 2/ed by Joe Armstrong p. 163
+# Based on Makefile template from "Programming Erlang" 2/ed
+# by Joe Armstrong, p. 163 (PDF version)
 
 .SUFFIXES: .erl .beam .yrl
 
