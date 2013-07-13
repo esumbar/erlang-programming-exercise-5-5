@@ -1,4 +1,4 @@
--module (phone).
+-module (phone_fsm).
 
 %% Code from 
 %%   Erlang Programming
@@ -14,26 +14,26 @@
 -export ([other_on_hook/1, other_off_hook/1]).
 
 start(Log) ->
-  event_manager:start(phone_event_manager,[{log_handler, Log}]),
+  event_manager:start(phone,[{log_handler, Log}]),
   ringer:start(),
-  register(phone, spawn(?MODULE, init, [])),
+  register(phone_fsm, spawn(?MODULE, init, [])),
   ok.
 
 stop() ->
-  phone ! {stop, self()},
+  phone_fsm ! {stop, self()},
   receive ok -> ok end,
   ringer:stop(),
-  event_manager:stop(phone_event_manager),
+  event_manager:stop(phone),
   ok.
 
 init() -> idle().
 
-incoming(Number)       -> phone ! {incoming, Number}, ok.
-outgoing(Number)       -> phone ! {outgoing, Number}, ok.
-off_hook()             -> phone ! off_hook, ok.
-on_hook()              -> phone ! on_hook, ok.
-other_on_hook(Number)  -> phone ! {other_on_hook, Number}, ok.
-other_off_hook(Number) -> phone ! {other_on_hook, Number}, ok.
+incoming(Number)       -> phone_fsm ! {incoming, Number}, ok.
+outgoing(Number)       -> phone_fsm ! {outgoing, Number}, ok.
+off_hook()             -> phone_fsm ! off_hook, ok.
+on_hook()              -> phone_fsm ! on_hook, ok.
+other_on_hook(Number)  -> phone_fsm ! {other_on_hook, Number}, ok.
+other_off_hook(Number) -> phone_fsm ! {other_on_hook, Number}, ok.
 
 idle() ->
   receive
@@ -54,6 +54,7 @@ ringing(Number) ->
       idle();
     off_hook ->
       ringer:stop_ringing(),
+      event_manager:send_event(phone, {no_billing, Number, incoming_call}),
       connected(Number)
   end.
 
@@ -70,19 +71,19 @@ dial() ->
 waiting(Number) ->
   receive
     {other_off_hook, Number} ->
+      event_manager:send_event(phone, {start_billing, Number, outgoing_call}),
       connected(Number);
     on_hook ->
       idle()
   end.
 
 connected(Number) ->
-  event_manager:send_event(phone_event_manager, {start, Number, phone_call}),
   receive
     on_hook ->
-      event_manager:send_event(phone_event_manager, {stop, Number, phone_call}),
+      event_manager:send_event(phone, {stop_billing, Number, on_hook}),
       idle();
     {other_on_hook, Number} ->
-      event_manager:send_event(phone_event_manager, {stop, Number, phone_call}),
+      event_manager:send_event(phone, {stop_billing, Number, other_on_hook}),
       ringer:start_tone(),
       disconnected()
   end.
