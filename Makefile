@@ -11,7 +11,7 @@
 
 ERL = erl -boot start_clean 
 
-MODS = event_manager log_handler ringer phone
+MODS = event_manager log_handler ringer_fsm phone_fsm
 
 all: compile
 

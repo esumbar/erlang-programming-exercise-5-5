@@ -15,14 +15,14 @@
 
 start(Log) ->
   event_manager:start(phone,[{log_handler, Log}]),
-  ringer:start(),
+  ringer_fsm:start(),
   register(phone_fsm, spawn(?MODULE, init, [])),
   ok.
 
 stop() ->
   phone_fsm ! {stop, self()},
   receive ok -> ok end,
-  ringer:stop(),
+  ringer_fsm:stop(),
   event_manager:stop(phone),
   ok.
 
@@ -38,10 +38,10 @@ other_off_hook(Number) -> phone_fsm ! {other_on_hook, Number}, ok.
 idle() ->
   receive
     {incoming, Number} ->
-      ringer:start_ringing(),
+      ringer_fsm:start_ringing(),
       ringing(Number);
     off_hook ->
-      ringer:start_tone(),
+      ringer_fsm:start_tone(),
       dial();
     {stop, Pid} ->
       Pid ! ok
@@ -50,10 +50,10 @@ idle() ->
 ringing(Number) ->
   receive
     {other_on_hook, Number} ->
-      ringer:stop_ringing(),
+      ringer_fsm:stop_ringing(),
       idle();
     off_hook ->
-      ringer:stop_ringing(),
+      ringer_fsm:stop_ringing(),
       event_manager:send_event(phone, {no_billing, Number, incoming_call}),
       connected(Number)
   end.
@@ -61,10 +61,10 @@ ringing(Number) ->
 dial() ->
   receive
     on_hook ->
-      ringer:stop_tone(),
+      ringer_fsm:stop_tone(),
       idle();
     {outgoing, Number} ->
-      ringer:stop_tone(),
+      ringer_fsm:stop_tone(),
       waiting(Number)
   end.
 
@@ -84,13 +84,13 @@ connected(Number) ->
       idle();
     {other_on_hook, Number} ->
       event_manager:send_event(phone, {stop_billing, Number, other_on_hook}),
-      ringer:start_tone(),
+      ringer_fsm:start_tone(),
       disconnected()
   end.
 
 disconnected() ->
   receive
     on_hook ->
-      ringer:stop_tone(),
+      ringer_fsm:stop_tone(),
       idle()
   end.
