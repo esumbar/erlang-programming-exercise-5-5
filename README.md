@@ -4,7 +4,7 @@ This is one possible solution to exercise 5-5 in the book _Erlang Programming_ b
 
 > Complete the coding of the phone FSM example, and then instrument it with logging using an event handler process. This should record enough information to enable billing for the use of the phone.
 
-To the existing four states of the phone FSM (idle, ringing, dial, and connected), two more are added, namely, _waiting_ (for other party to pick up our call) and _disconnected_ (when other party hangs up while we are connected). A _phone ringer FSM_ is also implemented that generates both the "ringing" and "dial tone" effects. The generic event manager and log handler codes from Chapter 5 required minor changes.
+To the existing four states of the phone FSM (idle, ringing, dial, and connected), two more are added, namely, _waiting_ (for other party to pick up our call) and _disconnected_ (when other party hangs up while we are connected). A _phone ringer FSM_ is also implemented that generates both the "ringing" and "dial tone" effects. The generic event manager and log handler codes from Chapter 5 required slight modifications before they would compile, and the log handler file mode was changed from _write_ to _append_ (supplied in a list).
 
 The phone FSM includes client code for testing in the shell, which was done successfully with Erlang R16B (erts-5.10.1). The following is a transcript of a typical session.
 
