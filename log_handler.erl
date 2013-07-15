@@ -1,5 +1,3 @@
--module(log_handler).
-
 %% Code from 
 %%   Erlang Programming
 %%   Francecso Cesarini and Simon Thompson
@@ -7,7 +5,7 @@
 %%   http://oreilly.com/catalog/9780596518189/
 %%   http:-module(log_handler).
 
-
+-module(log_handler).
 -export([init/1, terminate/1, handle_event/2]).
 
 init(File) ->

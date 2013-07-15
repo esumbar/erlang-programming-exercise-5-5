@@ -1,5 +1,3 @@
--module (phone_fsm).
-
 %% Code from 
 %%   Erlang Programming
 %%   Francecso Cesarini and Simon Thompson
@@ -8,10 +6,11 @@
 %%   http://www.erlangprogramming.org/
 %%   (c) Francesco Cesarini and Simon Thompson
 
--export ([start/1, stop/0, init/0]).
--export ([incoming/1, outgoing/1]).
--export ([off_hook/0, on_hook/0]).
--export ([other_on_hook/1, other_off_hook/1]).
+-module(phone_fsm).
+-export([start/1, stop/0, init/0]).
+-export([incoming/1, outgoing/1]).
+-export([off_hook/0, on_hook/0]).
+-export([other_on_hook/1, other_off_hook/1]).
 
 start(Log) ->
   event_manager:start(phone,[{log_handler, Log}]),

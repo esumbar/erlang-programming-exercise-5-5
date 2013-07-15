@@ -1,5 +1,3 @@
--module(event_manager).
-
 %% Code from 
 %%   Erlang Programming
 %%   Francecso Cesarini and Simon Thompson
@@ -8,6 +6,7 @@
 %%   http://www.erlangprogramming.org/
 %%   (c) Francesco Cesarini and Simon Thompson
 
+-module(event_manager).
 -export([start/2, stop/1]).
 -export([add_handler/3, delete_handler/2, get_data/2, send_event/2]).
 -export([init/1]).
